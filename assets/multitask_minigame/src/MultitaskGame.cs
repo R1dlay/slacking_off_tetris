@@ -29,13 +29,24 @@ public partial class MultitaskGame : Node
 	// === Enums === (PascalCase, members CONSTANT_CASE)
 
 	// === Constants === (CONSTANT_CASE)
-	public const int MAX_VIRUS_COUNT = 1; // should be <= the shader's PULLBACK_INPUT_SIZE
+	public const int MAX_VIRUS_COUNT = 16; // should be <= the shader's PULLBACK_INPUT_SIZE
 
-	private static readonly Vector2 VIRUS_SPAWN_RECT = new Vector2(1920, 1440); //the border of the rectangle the virus can spawn on
+	// the sizes of the borders that the virus can spawn on
+	private const float VIRUS_SPAWN_RECT_X = 1920;
+	private const float VIRUS_SPAWN_RECT_Y = 1440;
+
+	/// <summary>
+	/// If a randomly chosen point on the perimeter is within this number a corner, it will become the corner instead
+	/// </summary>
+	private const float CORNER_SNAP_RANGE_PX = 400; 
 
 	// === Exported Vars === (PascalCase)
 
 	[Export] public PackedScene PullbackScene;
+
+	[Export] public GradientTexture1D PullbackFalloffGrad;
+
+	[Export] public Array<Vector3> PullbackWeightAndFalloffsByPosIndex = new Array<Vector3>();
 
 	/// <summary>
 	/// How long the spawn timer will be set to per 
@@ -45,8 +56,6 @@ public partial class MultitaskGame : Node
 	/// A multiplier to the percieved time passed for spawn timer when there are NO viruses on screen
 	/// </summary>
 	[Export] public float TimeScaleWhenNoVirus { get; private set; }
-
-
 
 
 	// === Public Vars === (PascalCase)
@@ -61,6 +70,8 @@ public partial class MultitaskGame : Node
 	private float _timeSinceLastSpawn;
 
 	Array<VirusPullback> _virusInstances;
+
+	Array<float> _virusPositionAlongPerim;
 
 	ShaderMaterial _mat;
 
@@ -81,6 +92,7 @@ public partial class MultitaskGame : Node
 		_timeSinceLastSpawn = 0;
 
 		_virusInstances = new Array<VirusPullback>();
+		_virusPositionAlongPerim = new Array<float>();
 
         _mat = (ShaderMaterial)GetNode<MeshInstance2D>("WorkScreen").Material;
 	}
@@ -106,9 +118,10 @@ public partial class MultitaskGame : Node
 
     public override void _Process(double delta)
     {
-		// update timer - can't do this w/ timer because we are scaling the time sometimes.
-		// Specifically do this in Process because it has to do with time, which we want to be as accurate as possible, instead of movement
-		_totalTimeElapsed += (float)delta;
+
+        // update timer - can't do this w/ timer because we are scaling the time sometimes.
+        // Specifically do this in Process because it has to do with time, which we want to be as accurate as possible, instead of movement
+        _totalTimeElapsed += (float)delta;
         _timeSinceLastSpawn += (float)delta * (PullbacksSpawned > 0 ? TimeScaleWhenNoVirus : 1);
         if (_timeSinceLastSpawn >= _spawnTime)
         {
@@ -130,8 +143,7 @@ public partial class MultitaskGame : Node
 
 		VirusPullback pb = PullbackScene.Instantiate<VirusPullback>();
 
-		//pb.Init(PullbacksSpawned, new Vector2(960, 0), Vector2.Down, new Vector3(250, 0, 250), null); //TODO
-		pb.Init(PullbacksSpawned, Vector2.Zero, Vector2.One.Normalized(), new Vector3(250, 0, 250), null); //TODO
+		pb.Init(PullbacksSpawned, GetNewRandomVirusData()); 
 		PullbacksSpawned += 1;
 
 		_virusInstances.Add(pb);
@@ -147,8 +159,9 @@ public partial class MultitaskGame : Node
 	{
 		var removed = _virusInstances[index];
 		_virusInstances.RemoveAt(index);
+		_virusPositionAlongPerim.RemoveAt(index);
 
-		foreach (var pb in _virusInstances)
+        foreach (var pb in _virusInstances)
 		{
 			pb.UpdateIndexIfNeeded(index);
 		}
@@ -160,18 +173,108 @@ public partial class MultitaskGame : Node
 		EmitSignal(SignalName.OnPullbackClosed, index);
 	}
 
-	private (Vector2, Vector2, Vector3, GradientTexture1D) GetNewRandomVirusData()
+	private (Vector2, Vector2, Vector3, GradientTexture1D) GetNewRandomVirusData(bool trackPermiter = true)
 	{
-        (Vector2, Vector2, Vector3, GradientTexture1D) ret = (new Vector2(), new Vector2(), new Vector3(), null);
+        (Vector2, Vector2, Vector3, GradientTexture1D) ret = (Vector2.Zero, Vector2.Zero, Vector3.Zero, null);
 
 		// get linear random point along perimeter
+		float perim = (VIRUS_SPAWN_RECT_X + VIRUS_SPAWN_RECT_Y) * 2;
+		float distAlongPerim = _rng.RandfRange(0, perim);
+		
+		// push away from others
+        Vector2 distToClosest = new Vector2(float.MaxValue, float.MaxValue);
+		foreach (float other in _virusPositionAlongPerim)
+		{
+			float right = (perim - distAlongPerim + other) % perim;
+			float left = perim - right;
+			if(left < distToClosest.X)
+			{
+				distToClosest.X = left;
+			}
+			if (right < distToClosest.Y)
+			{
+				distToClosest.Y = right;
+			}
+		}
 
-		// snap a certain range from corners to corners?
+		Vector2 desiredFromLeftAndRight = new Vector2(
+			Mathf.Max(0, CORNER_SNAP_RANGE_PX - distToClosest.X),
+			Mathf.Max(0, CORNER_SNAP_RANGE_PX - distToClosest.Y)
+			);
+
+		float change = 0;
+
+		if(desiredFromLeftAndRight.X == 0 || desiredFromLeftAndRight.Y == 0)
+		{
+            // one of these is 0, the other is how we need to change, or this does nothing
+            change = desiredFromLeftAndRight.X - desiredFromLeftAndRight.Y; 
+		}
+		else
+		{
+            // we need to balance the change -> add (with right as negative), div 2, change sign
+            change = -(desiredFromLeftAndRight.X - desiredFromLeftAndRight.Y) / 2;
+		}
+
+		distAlongPerim += change;
+
+
+        int pbState = distAlongPerim switch
+        {
+            <= CORNER_SNAP_RANGE_PX or  >= 2 * VIRUS_SPAWN_RECT_X + 2 * VIRUS_SPAWN_RECT_Y - CORNER_SNAP_RANGE_PX => 0,
+			> CORNER_SNAP_RANGE_PX and < VIRUS_SPAWN_RECT_X - CORNER_SNAP_RANGE_PX => 1,
+            >= VIRUS_SPAWN_RECT_X - CORNER_SNAP_RANGE_PX and <= VIRUS_SPAWN_RECT_X + CORNER_SNAP_RANGE_PX => 2,
+			> VIRUS_SPAWN_RECT_X + CORNER_SNAP_RANGE_PX and < VIRUS_SPAWN_RECT_X + VIRUS_SPAWN_RECT_Y - CORNER_SNAP_RANGE_PX => 3,
+            >= VIRUS_SPAWN_RECT_X + VIRUS_SPAWN_RECT_Y - CORNER_SNAP_RANGE_PX and <= VIRUS_SPAWN_RECT_X + VIRUS_SPAWN_RECT_Y + CORNER_SNAP_RANGE_PX => 4,
+			> VIRUS_SPAWN_RECT_X + VIRUS_SPAWN_RECT_Y + CORNER_SNAP_RANGE_PX and < 2 * VIRUS_SPAWN_RECT_X + VIRUS_SPAWN_RECT_Y - CORNER_SNAP_RANGE_PX => 5,
+            >= 2 * VIRUS_SPAWN_RECT_X + VIRUS_SPAWN_RECT_Y - CORNER_SNAP_RANGE_PX and <= 2 * VIRUS_SPAWN_RECT_X + VIRUS_SPAWN_RECT_Y + CORNER_SNAP_RANGE_PX => 6,
+			> 2 * VIRUS_SPAWN_RECT_X + VIRUS_SPAWN_RECT_Y + CORNER_SNAP_RANGE_PX => 7,
+            _ => throw new Exception($"distance along perimiter {distAlongPerim} was invalid!")
+        };
+
+        // snap a certain range from corners to corners?
+        distAlongPerim = pbState switch
+        {
+            0 => 0,
+            2 => VIRUS_SPAWN_RECT_X,
+            4 => VIRUS_SPAWN_RECT_X + VIRUS_SPAWN_RECT_Y,
+            6 => 2 * VIRUS_SPAWN_RECT_X + VIRUS_SPAWN_RECT_Y,
+            _ => distAlongPerim
+        };
+
+		//keep track of it
+		if(trackPermiter)
+		{
+			_virusPositionAlongPerim.Add(distAlongPerim);
+
+        }
+
+        // put into v2
+        ret.Item1 = new Vector2(
+			Mathf.Clamp(distAlongPerim, 0, VIRUS_SPAWN_RECT_X) - Mathf.Clamp(distAlongPerim - VIRUS_SPAWN_RECT_X - VIRUS_SPAWN_RECT_Y, 0, VIRUS_SPAWN_RECT_X),
+            Mathf.Clamp(distAlongPerim - VIRUS_SPAWN_RECT_X, 0, VIRUS_SPAWN_RECT_Y) - Mathf.Clamp(distAlongPerim - (2 * VIRUS_SPAWN_RECT_X) - VIRUS_SPAWN_RECT_Y, 0, VIRUS_SPAWN_RECT_Y)
+        );
 
 		// grab direction vector
 
-		// use constant for pullback and gradient? Injected from above for difficulty modifications?
+		ret.Item2 = pbState switch
+		{
+			0 => new Vector2(1, 1).Normalized(),
+			1 => new Vector2(0, 1),
+			2 => new Vector2(-1, 1).Normalized(),
+			3 => new Vector2(-1, 0),
+			4 => new Vector2(-1, -1).Normalized(),
+			5 => new Vector2(0, -1),
+			6 => new Vector2(1, -1).Normalized(),
+			7 => new Vector2(1, 0),
+            _ => throw new Exception($"internal state {pbState} not recognized!")
+        };
 
-		return ret;
+		ret.Item3 = PullbackWeightAndFalloffsByPosIndex[pbState];
+
+        // use constant for pullback and gradient? Injected from above for difficulty modifications?
+
+        ret.Item4 = PullbackFalloffGrad;
+
+        return ret;
 	}
 }

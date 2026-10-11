@@ -183,11 +183,13 @@ public partial class VirusPullback : Node2D
         WeightAndFalloffs = weightAndFalloffs;
         FalloffTex = falloffTex;
 
-        Rotation = pullDir.AngleTo(Vector2.Right);
+        Rotation = -pullDir.AngleTo(Vector2.Down);
 
         //mark initialized
         _initialized = true;
     }
+
+    public void Init(int index, (Vector2, Vector2, Vector3, GradientTexture1D) data) => Init(index, data.Item1, data.Item2, data.Item3, data.Item4);
 
     public void UpdateIndexIfNeeded(int removedInd)
     {

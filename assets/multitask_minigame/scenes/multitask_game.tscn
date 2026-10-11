@@ -14,20 +14,22 @@ point_count = 5
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ts1fx"]
 shader = ExtResource("1_pp1yv")
 shader_parameter/pullback_count = 0
-shader_parameter/pullback_loc_dirs = PackedVector4Array(640, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-shader_parameter/pullback_weights = PackedVector3Array(100, 0, 1250, 100, 0, 1250, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-shader_parameter/pullback_texs = Array[Texture2D]([ExtResource("3_ts1fx"), ExtResource("3_ts1fx")])
+shader_parameter/pullback_loc_dirs = PackedVector4Array(960, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/pullback_weights = PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/pullback_texs = Array[Texture2D]([null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null])
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_7666b"]
 size = Vector2(1920, -1440)
-subdivide_width = 192
-subdivide_depth = 144
+subdivide_width = 128
+subdivide_depth = 128
 center_offset = Vector3(960, 720, 0)
 orientation = 2
 
 [node name="MultitaskGame" type="Node2D" unique_id=1871558930]
 script = ExtResource("1_ts1fx")
 PullbackScene = ExtResource("2_gdae6")
+PullbackFalloffGrad = ExtResource("3_ts1fx")
+PullbackWeightAndFalloffsByPosIndex = Array[Vector3]([Vector3(300, 75, 750), Vector3(250, 100, 1200), Vector3(300, 75, 750), Vector3(250, 100, 1200), Vector3(300, 75, 750), Vector3(250, 100, 1200), Vector3(300, 75, 750), Vector3(250, 100, 1200)])
 SpawnTimeByElapsedTimeCurve = SubResource("Curve_6bw7e")
 TimeScaleWhenNoVirus = 1.2
 
