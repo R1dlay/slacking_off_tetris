@@ -1,18 +1,52 @@
 [gd_scene format=3 uid="uid://xn84wxuwbqg0"]
 
 [ext_resource type="PackedScene" uid="uid://cfsisisu6rp03" path="res://placeholder/office_mockup/office_mockup_amg_v07.glb" id="1_nxxpr"]
+[ext_resource type="PackedScene" uid="uid://0ymnqtfnb2kw" path="res://assets/camera_controller/scenes/camera_controller.tscn" id="1_qef7s"]
+[ext_resource type="PackedScene" uid="uid://lrgpewhpbdkx" path="res://assets/camera_controller/scenes/camera_path.tscn" id="2_m3xpu"]
+
+[sub_resource type="Environment" id="Environment_27m30"]
+background_mode = 1
+background_color = Color(0.1577, 0.18030998, 0.19, 1)
+background_energy_multiplier = 2.0
+ambient_light_color = Color(0.107999995, 0.20533338, 0.4, 1)
+ambient_light_energy = 0.27
+tonemap_mode = 1
+tonemap_white = 4.0
+
+[sub_resource type="Curve3D" id="Curve3D_m3xpu"]
+resource_local_to_scene = true
+bake_interval = 0.01
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, -0.1, -0.75, 0, -0.2, -0.1, 0, 0.1, 0.065, 0, -0.1, -0.6783895, 0, -0.6402504, -0.06, 0, 0, 0, 0, 0, -0.33, 0, -0.8, 0, 0, 0, 0.37, 0, 0, 0, 0, -0.8, -0.185, 0, -0.14, 0, 0, 0, 0.35151753, 0.038451463, -0.72623736, 0, 0, -0.3, 0, 0, 0.325, 0.5, 0, -0.35, 0.13, 0, 0, -0.6517061, -0.015558243, -0.1889602, 0.4, 0, 0.115),
+"tilts": PackedFloat32Array(0.2, 0.2, 0, 0, 0, 0, 0)
+}
+point_count = 7
 
 [node name="Testing3dOffice" type="Node3D" unique_id=1201757739]
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1629130312]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=557367281]
+environment = SubResource("Environment_27m30")
+
+[node name="PrimaryDirLight" type="DirectionalLight3D" parent="." unique_id=1629130312]
 transform = Transform3D(0.99943924, -0.0018010818, -0.033435706, 0.033484172, 0.05375888, 0.9979924, 0, -0.9985523, 0.05378904, 0, 3.9135752, 0)
 light_color = Color(0.8784314, 0.98039216, 1, 1)
 light_energy = 1.608
 shadow_enabled = true
 shadow_bias = 0.05
+shadow_normal_bias = 10.0
 
-[node name="Camera3D" type="Camera3D" parent="." unique_id=1490249147]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.11083329, 0, 0.49085212)
+[node name="AmbientFillLight" type="DirectionalLight3D" parent="." unique_id=552910499]
+transform = Transform3D(0.99943924, -0.0018011279, -0.033435572, 0.021968666, 0.78885895, 0.61418164, 0.025269726, -0.6145718, 0.7884561, -1.1886697, 1.3793049, 1.8312604)
+light_color = Color(0.5632, 0.6272, 0.64, 1)
+light_energy = 0.554
+shadow_bias = 0.05
+
+[node name="CameraController" parent="." unique_id=140985953 node_paths=PackedStringArray("InitialPath") instance=ExtResource("1_qef7s")]
+InitialPath = NodePath("../CameraPath")
+
+[node name="CameraPath" parent="." unique_id=587206965 instance=ExtResource("2_m3xpu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.13715607, 0, 0.600316)
+curve = SubResource("Curve3D_m3xpu")
 
 [node name="office_mockup_amg_v07" parent="." unique_id=2096072807 instance=ExtResource("1_nxxpr")]
 transform = Transform3D(1.5, 0, 0, 0, 0.40004727, -1.4456701, 0, 1.4456701, 0.40004727, -10.604521, 0, -1.6987848)
@@ -46,6 +80,9 @@ visible = false
 
 [node name="Sticky Note 2" parent="office_mockup_amg_v07" index="11" unique_id=1547018906]
 visible = false
+
+[node name="Tabletop" parent="office_mockup_amg_v07" index="15" unique_id=1777376413]
+transform = Transform3D(-0.00065231323, -9.328127e-05, -0.99999976, 0.9599688, 0.28010643, -0.00065228355, 0.28010643, -0.959969, -9.3221664e-05, 7.2940063, 0.7375443, 1.2591722)
 
 [node name="Stack of Papers 1_001" parent="office_mockup_amg_v07" index="19" unique_id=200174997]
 transform = Transform3D(0.030794848, 0, -0.13389508, 0, 0.10593998, 0, 0.1034644, 0, 0.039852154, 6.8767595, 0.8598636, -0.7694171)

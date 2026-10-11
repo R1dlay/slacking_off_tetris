@@ -15,6 +15,14 @@ public partial class CameraController : Node3D
 
 	// === Exported Vars === (PascalCase)
 
+	[Export] private Node InitialPath;
+
+	[Export(PropertyHint.Range, "0,1,.01")] private float ExportProgressOverride
+	{
+		get { return _pathFollow.ProgressRatio; }
+		set { _pathFollow.ProgressRatio = value; }
+	}
+
 	// === Public Vars === (PascalCase)
 	public Camera3D Camera { get; private set; }
 	public Tween MovementTween { get; private set;  }
@@ -39,6 +47,8 @@ public partial class CameraController : Node3D
 		//runs when the object and its children are ready, Child -> Parent
 		Camera = GetNode<Camera3D>("%CameraInstance");
 		_tweenQueue = new();
+
+		Callable.From(() => { SetNewPath(InitialPath); }).CallDeferred();
 	}
 	
 	// Prefer using PhysicsProcess over Process
