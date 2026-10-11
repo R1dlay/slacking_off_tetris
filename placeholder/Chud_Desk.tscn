@@ -1,0 +1,113 @@
+[gd_scene format=3 uid="uid://6tgl143ssrc6"]
+
+[sub_resource type="CSharpScript" id="CSharpScript_cvek4"]
+script/source = "using Godot;
+using System;
+
+namespace SlackingOff;
+
+public partial class ChudDesk : Node3D
+{
+	// === Signals === (PascalCaseEventHandler())
+
+	// === Enums === (PascalCase, members CONSTANT_CASE)
+
+	// === Constants === (CONSTANT_CASE)
+
+	// === Exported Vars === (PascalCase)
+	[Export] Curve curve1 = new Curve();
+	[Export] Curve2D curve2 = new Curve2D();
+	[Export] Curve3D curve3 = new Curve3D();
+	
+	// === Public Vars === (PascalCase)
+	
+	// === Private Vars === (_underscoredCamelCase)
+	
+	// === Godot Methods ===
+	
+	public ChudDesk()
+	{
+		//runs when the object is created in memory, Parent -> Child
+	}
+	
+	public override void _Ready()
+	{
+		//runs when the object and its children are ready, Child -> Parent
+	}
+	
+	// Prefer using PhysicsProcess over Process
+	public override void _PhysicsProcess(double delta)
+	{
+		
+	}
+	
+	// === Further Methods === (PascalCase, local variables camelCase)
+}
+"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cx3vu"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_27m30"]
+albedo_color = Color(0.8557589, 0.7091639, 0.65719396, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8ge1m"]
+albedo_color = Color(0, 0, 0, 1)
+
+[node name="Node3D" type="Node3D" unique_id=1710891994]
+script = SubResource("CSharpScript_cvek4")
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="." unique_id=432592333]
+autosmooth = true
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D" unique_id=1786005342]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8851929, -0.33605957, -0.1932373)
+size = Vector3(2.7703857, 0.053955078, 1.0979004)
+material = SubResource("StandardMaterial3D_cx3vu")
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="CSGCombiner3D" unique_id=1582240365]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8244781, -0.33605957, 0.16311646)
+size = Vector3(0.8918152, 0.053955078, 1.8106079)
+material = SubResource("StandardMaterial3D_cx3vu")
+
+[node name="Computer" type="CSGBox3D" parent="CSGCombiner3D" unique_id=854970288]
+transform = Transform3D(0.9900473, 0, 0.14073569, 0, 1, 0, -0.14073569, 0, 0.9900473, 0.55661905, -0.06878668, -0.21466026)
+size = Vector3(0.5975189, 0.588501, 0.43598938)
+
+[node name="Computer2" type="CSGBox3D" parent="CSGCombiner3D/Computer" unique_id=1870495940]
+transform = Transform3D(1, 0, -2.9802322e-08, 0, 1, 0, 2.9802322e-08, 0, 1, -0.0053272843, 0.02897644, 0.25938705)
+operation = 2
+size = Vector3(0.50985336, 0.45962524, 0.16701698)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGCombiner3D" unique_id=846045397]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8851929, -0.07897949, -0.696167)
+size = Vector3(2.7703857, 0.842041, 0.092041016)
+material = SubResource("StandardMaterial3D_27m30")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="CSGCombiner3D" unique_id=588432734]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.227188, -0.07897949, 0.16619873)
+size = Vector3(0.08639526, 0.842041, 1.8167725)
+material = SubResource("StandardMaterial3D_27m30")
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="CSGCombiner3D" unique_id=2147067778]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4772606, -0.07897949, -0.11871338)
+size = Vector3(0.08639526, 0.842041, 1.2469482)
+material = SubResource("StandardMaterial3D_27m30")
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="CSGCombiner3D" unique_id=775257250]
+transform = Transform3D(-8.881784e-16, -2.9802322e-08, 1, 1, -4.371139e-08, 0, 4.371139e-08, 1, 2.9802322e-08, 1.7821133, 0.042230487, -0.6244888)
+radius = 0.21826172
+height = 0.06707764
+material = SubResource("StandardMaterial3D_cx3vu")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D/CSGCylinder3D" unique_id=1713036286]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07019043, 0.042610347, 0.0034587383)
+size = Vector3(0.2121582, 0.061584473, 0.018310547)
+material = SubResource("StandardMaterial3D_8ge1m")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1520213712]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=654345670]
+transform = Transform3D(1, 0, 0, 0, -0.08771545, 0.99614555, 0, -0.99614555, -0.08771545, 0, 0, 0)
+
+[node name="DirectionalLight3D2" type="DirectionalLight3D" parent="." unique_id=669776471]
+transform = Transform3D(1, 0, 0, 0, 0.8741378, 0.48567814, 0, -0.48567814, 0.8741378, 0, 0, 0)
