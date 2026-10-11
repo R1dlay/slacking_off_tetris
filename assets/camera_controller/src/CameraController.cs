@@ -32,7 +32,7 @@ public partial class CameraController : Node3D
         }
 	}
 	private float _exportProgressOverride;
-	[Export(PropertyHint.Range, "0,1,.001")] private float ExportProgressOverride
+	[Export(PropertyHint.Range, "-0.001,1,.001")] private float ExportProgressOverride
 	{
 		get 
 		{
@@ -40,7 +40,7 @@ public partial class CameraController : Node3D
 		}
 		set 
 		{
-            if (IsInstanceValid(_pathFollow))
+            if (value >= 0 && IsInstanceValid(_pathFollow))
 			{
                 _pathFollow.ProgressRatio = value;
                 SetOffsetVariablesRatio(value);
@@ -137,12 +137,6 @@ public partial class CameraController : Node3D
             throw new ArgumentException($"remote reference of cameraPath {cameraPath.Name} is not valid");
         }
 
-        // check progress override
-        if (progressRatioOverride >= 0)
-		{
-			follower.ProgressRatio = progressRatioOverride;
-		}
-
 		// now overwrite our locals
 		_cameraPath = cameraPath;
 		_path = path;
@@ -150,9 +144,22 @@ public partial class CameraController : Node3D
 		_offset = offset;
 		_remoteTransform = remote;
 
-		// finally, update remote
+		// update remote
 		_remoteTransform.RemotePath = _remoteTransform.GetPathTo(Camera);
-	}
+
+        // then set progress if needed
+        if (progressRatioOverride >= 0)
+        {
+            _pathFollow.ProgressRatio = progressRatioOverride;
+            SetOffsetVariablesRatio(progressRatioOverride);
+
+        }
+        else if (_exportProgressOverride >= 0)
+        {
+            _pathFollow.ProgressRatio = _exportProgressOverride;
+            SetOffsetVariablesRatio(_exportProgressOverride);
+        }
+    }
 
 	/// <summary>
 	/// Sets the camera to the index of the (control) point on the path

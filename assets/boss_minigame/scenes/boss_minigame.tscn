@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://cmrufqlkh6atu"]
 
-[ext_resource type="Script" uid="uid://dyvo8java4nx0" path="res://boss_minigame/boss_minigame.gd" id="1_rjfy2"]
-[ext_resource type="PackedScene" uid="uid://c4ncfvarqv8ya" path="res://boss_minigame/dialogue_wheel.tscn" id="1_yoxjw"]
-[ext_resource type="Script" uid="uid://7e5d5wds784u" path="res://boss_minigame/boss.gd" id="3_ikc4f"]
-[ext_resource type="Script" uid="uid://b6k4hhism1rye" path="res://boss_minigame/boss_meter.gd" id="4_e8opr"]
-[ext_resource type="Texture2D" uid="uid://h4g07vxqkrai" path="res://placeholder/placeholder assets/speech.png" id="5_mv6ej"]
+[ext_resource type="Script" uid="uid://dyvo8java4nx0" path="res://assets/boss_minigame/src/boss_minigame.gd" id="1_rjfy2"]
+[ext_resource type="PackedScene" uid="uid://c4ncfvarqv8ya" path="res://assets/boss_minigame/scenes/dialogue_wheel.tscn" id="1_yoxjw"]
+[ext_resource type="Script" uid="uid://7e5d5wds784u" path="res://assets/boss_minigame/src/boss.gd" id="3_ikc4f"]
+[ext_resource type="Script" uid="uid://b6k4hhism1rye" path="res://assets/boss_minigame/src/boss_meter.gd" id="4_e8opr"]
+[ext_resource type="Texture2D" uid="uid://h4g07vxqkrai" path="res://assets/boss_minigame/sprites/speech.png" id="5_mv6ej"]
 
 [node name="BossMinigame" type="Node2D" unique_id=1460465798 node_paths=PackedStringArray("talking_wheel", "tone_wheel")]
 script = ExtResource("1_rjfy2")
