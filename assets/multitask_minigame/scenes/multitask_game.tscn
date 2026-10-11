@@ -37,3 +37,8 @@ TimeScaleWhenNoVirus = 1.2
 material = SubResource("ShaderMaterial_ts1fx")
 mesh = SubResource("PlaneMesh_7666b")
 texture = ExtResource("1_48mhq")
+
+[node name="DEBUG_MousePosIndicator" type="Sprite2D" parent="." unique_id=1367399119]
+unique_name_in_owner = true
+visible = false
+texture = ExtResource("1_48mhq")

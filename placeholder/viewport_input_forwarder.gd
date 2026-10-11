@@ -5,6 +5,9 @@ extends Node
 @export var viewport : SubViewport;
 @export var node_quad : MeshInstance3D;
 @export var active_area: Area3D;
+# The controller node of the scene that this is input forwarding to.
+# Used to send notifications down the tree from otherwise unnoticable events, like mouse enter/exit
+@export var subscene_controller: Node; 
 
 var _is_mouse_inside:bool = false;
 var last_event_pos2D:=Vector2();
@@ -18,9 +21,13 @@ func _ready() -> void:
 func _mouse_entered_area() -> void:
 	_is_mouse_inside = true;
 	viewport.notification(NOTIFICATION_VP_MOUSE_ENTER);
+	if(subscene_controller): 
+		subscene_controller.notification(NOTIFICATION_VP_MOUSE_ENTER);
 
 func _mouse_exited_area() -> void:
 	viewport.notification(NOTIFICATION_VP_MOUSE_EXIT);
+	if(subscene_controller): 
+		subscene_controller.notification(NOTIFICATION_VP_MOUSE_EXIT);
 	_is_mouse_inside = false;
 
 func _unhandled_input(input_event: InputEvent) -> void:

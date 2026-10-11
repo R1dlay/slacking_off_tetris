@@ -75,6 +75,8 @@ public partial class MultitaskGame : Node
 
 	ShaderMaterial _mat;
 
+	Node2D _mousePosIndicator;
+
 	// === Godot Methods ===
 	
 	public MultitaskGame()
@@ -95,6 +97,8 @@ public partial class MultitaskGame : Node
 		_virusPositionAlongPerim = new Array<float>();
 
         _mat = (ShaderMaterial)GetNode<MeshInstance2D>("WorkScreen").Material;
+
+		_mousePosIndicator = GetNode<Node2D>("%DEBUG_MousePosIndicator");
 	}
 	
 	// Prefer using PhysicsProcess over Process
@@ -131,6 +135,28 @@ public partial class MultitaskGame : Node
 			_spawnTime = SpawnTimeByElapsedTimeCurve.Sample(_totalTimeElapsed);
 			GD.Print(_totalTimeElapsed, " ", old, " ", _spawnTime);
         }
+    }
+
+    public override void _Input(InputEvent @event)
+    {
+        if(@event is InputEventMouseMotion evMM)
+		{
+			_mousePosIndicator.Position = evMM.Position;
+        }
+    }
+
+    public override void _Notification(int what)
+    {
+        switch((long)what)
+		{
+			case NotificationVpMouseExit:
+				foreach(VirusPullback vp in _virusInstances)
+				{
+					//when mouse exits let go of all held viruses
+					vp.TryGrabOrLetGo(false);
+				}
+				break;
+		}
     }
 	
 	// === Further Methods === (PascalCase, local variables camelCase)

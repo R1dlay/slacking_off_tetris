@@ -10,11 +10,6 @@ _data = {
 }
 point_count = 4
 
-[sub_resource type="Curve" id="Curve_5mtg0"]
-_limits = [0.0, 360.0, 0.0, 1.0]
-_data = [Vector2(0, 90), 0.0, 0.0, 0, 0, Vector2(0.5087282, 160.9938), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
-point_count = 3
-
 [sub_resource type="PrismMesh" id="PrismMesh_fqh0e"]
 size = Vector3(0.1, 0.1, 0.1)
 
@@ -25,11 +20,9 @@ path = NodePath(".")
 follower = NodePath("PathFollower")
 offset_node = NodePath("PathFollower/RotationOffset")
 remote = NodePath("PathFollower/RotationOffset/RemoteTransform3D")
-offset_r_y_rot = SubResource("Curve_5mtg0")
 
 [node name="PathFollower" type="PathFollow3D" parent="." unique_id=1038472568]
-transform = Transform3D(-0.97013235, 0, 0.24253257, 0, 1.0000006, 0, -0.242533, 0, -0.9701306, 1, 0, 0)
-progress = 3.469739
+transform = Transform3D(0.9701311, 0, 0.24253233, 0, 1.0000001, 0, -0.24253279, 0, 0.97012925, -1, 0, 0)
 rotation_mode = 1
 
 [node name="RotationOffset" type="Node3D" parent="PathFollower" unique_id=805771644]

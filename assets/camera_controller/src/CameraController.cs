@@ -1,6 +1,7 @@
 using Godot;
 using Godot.Collections;
 using System;
+using System.Diagnostics;
 
 
 namespace SlackingOff;
@@ -15,12 +16,38 @@ public partial class CameraController : Node3D
 
 	// === Exported Vars === (PascalCase)
 
-	[Export] private Node InitialPath;
-
-	[Export(PropertyHint.Range, "0,1,.01")] private float ExportProgressOverride
+	[Export] private Node InitialPath
 	{
-		get { return _pathFollow.ProgressRatio; }
-		set { _pathFollow.ProgressRatio = value; }
+		get
+		{
+			return _initialPath;
+		}
+		set
+		{
+            _initialPath = value;
+			if(IsInstanceValid(value))
+			{
+                SetNewPath(value);
+            }
+        }
+	}
+	private float _exportProgressOverride;
+	[Export(PropertyHint.Range, "0,1,.001")] private float ExportProgressOverride
+	{
+		get 
+		{
+            return _exportProgressOverride;
+		}
+		set 
+		{
+            if (IsInstanceValid(_pathFollow))
+			{
+                _pathFollow.ProgressRatio = value;
+                SetOffsetVariablesRatio(value);
+            }   
+			_exportProgressOverride = value;
+
+        }
 	}
 
 	// === Public Vars === (PascalCase)
@@ -34,10 +61,12 @@ public partial class CameraController : Node3D
 	private Node3D _offset;
 	private RemoteTransform3D _remoteTransform;
 	private System.Collections.Generic.Queue<(float, float, float, Tween.TransitionType, Tween.EaseType)> _tweenQueue;
-	
-	// === Godot Methods ===
-	
-	public CameraController()
+
+	private Node _initialPath;
+
+    // === Godot Methods ===
+
+    public CameraController()
 	{
 		//runs when the object is created in memory, Parent -> Child
 	}
@@ -48,7 +77,7 @@ public partial class CameraController : Node3D
 		Camera = GetNode<Camera3D>("%CameraInstance");
 		_tweenQueue = new();
 
-		Callable.From(() => { SetNewPath(InitialPath); }).CallDeferred();
+		Callable.From(() => { SetNewPath(_initialPath); }).CallDeferred();
 	}
 	
 	// Prefer using PhysicsProcess over Process
@@ -76,12 +105,20 @@ public partial class CameraController : Node3D
 	/// <param name="progressRatioOverride"></param>
 	public void SetNewPath(Node cameraPath, float progressRatioOverride = -1)
 	{
+		if(!IsInstanceValid(cameraPath))
+		{
+            throw new ArgumentException($"cameraPath is not valid");
+        }
+
 		// asserts
-		Godot.Collections.Array nodeRefs = (Godot.Collections.Array)cameraPath.Call("get_node_refs");
-		Path3D path = (Path3D)nodeRefs[0];
-        PathFollow3D follower = (PathFollow3D)nodeRefs[1];
-		Node3D offset = (Node3D)nodeRefs[2];
-        RemoteTransform3D remote = (RemoteTransform3D)nodeRefs[3];
+		Godot.Collections.Array<Node> nodeRefs =
+             !Engine.IsEditorHint() && cameraPath.HasMethod("get_node_refs") ? 
+			 (Godot.Collections.Array<Node>)cameraPath.Call("get_node_refs") 
+			 : new Godot.Collections.Array<Node> { null, null, null, null};
+		Path3D path = (Path3D)nodeRefs[0] ?? (Path3D)cameraPath.Get("path");
+        PathFollow3D follower = (PathFollow3D)nodeRefs[1] ?? (PathFollow3D)cameraPath.Get("follower");
+		Node3D offset = (Node3D)nodeRefs[2] ?? (Node3D)cameraPath.Get("offset_node");
+        RemoteTransform3D remote = (RemoteTransform3D)nodeRefs[3] ?? (RemoteTransform3D)cameraPath.Get("remote");
 
 		if(!IsInstanceValid(path))
 		{
@@ -175,7 +212,7 @@ public partial class CameraController : Node3D
 		MovementTween.SetTrans(trans);
 		MovementTween.SetParallel(true);
 		MovementTween.TweenProperty(_pathFollow, "progress", toProgress, time).From(fromProgress);
-		MovementTween.TweenMethod(Callable.From<float>((p) => SetOffsetVariables(p)), fromProgress, toProgress, time);
+		MovementTween.TweenMethod(Callable.From<float>((p) => SetOffsetVariablesProgress(p)), fromProgress, toProgress, time);
 		// Add a check to run a "queued" tweend
 		MovementTween.Finished += () => { RunDequeuedTween(); };
     }
@@ -287,11 +324,29 @@ public partial class CameraController : Node3D
 		return c.GetClosestOffset(_path.Curve.GetPointPosition(index));
     }
 
-	private void SetOffsetVariables(float progress)
+	private void SetOffsetVariablesProgress(float progress)
 	{
 		_offset.Position = (Vector3)_cameraPath.Call("get_position_offset_at_progress", progress);
 		_offset.RotationDegrees = (Vector3)_cameraPath.Call("get_rotation_offset_at_progress", progress);
+		float sampledFOV = (float)_cameraPath.Call("get_fov_at_progress", progress);
+        if (sampledFOV >= 0)
+		{
+			Camera.Fov = sampledFOV;
+
+        }
+
     }
 
+	private void SetOffsetVariablesRatio(float ratio)
+	{
+        _offset.Position = (Vector3)_cameraPath.Call("get_position_offset_at_ratio", ratio);
+        _offset.RotationDegrees = (Vector3)_cameraPath.Call("get_rotation_offset_at_ratio", ratio);
+		float sampledFOV = (float)_cameraPath.Call("get_fov_at_ratio", ratio);
+        if (sampledFOV >= 0)
+        {
+            Camera.Fov = sampledFOV;
+
+        }
+    }
 
 }

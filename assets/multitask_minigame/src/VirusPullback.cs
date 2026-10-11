@@ -148,11 +148,11 @@ public partial class VirusPullback : Node2D
         if (@event.IsActionPressed("grab_virus_pullback"))
         {
             // will never set false if true, but will set true if able to be set true
-            _beingDragged = _beingDragged || _dragable; 
+            TryGrabOrLetGo(true);
         }
         else if (@event.IsActionReleased("grab_virus_pullback"))
         {
-            _beingDragged = false;
+            TryGrabOrLetGo(false);
         }
 
         if (_beingDragged)
@@ -209,5 +209,19 @@ public partial class VirusPullback : Node2D
         locDirs[Index] = new Vector4(Position.X, Position.Y, Direction.X, Direction.Y);
         weights[Index] = WeightAndFalloffs * new Vector3(_progress, 1, 1);
         texs[Index] = FalloffTex;
+    }
+
+    public void TryGrabOrLetGo(bool grab)
+    {
+        if(grab)
+        {
+            // will never set false if true, but will set true if able to be set true
+            _beingDragged = _beingDragged || _dragable;
+        }
+        else
+        {
+            _beingDragged = false;
+        }
+
     }
 }
