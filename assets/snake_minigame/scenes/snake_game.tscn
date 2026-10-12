@@ -1,23 +1,24 @@
 [gd_scene format=3 uid="uid://ce3aewpf0ulhk"]
 
 [ext_resource type="Script" uid="uid://tejmjk7pdvb2" path="res://assets/snake_minigame/scenes/snake_game.gd" id="1_k1hxc"]
+[ext_resource type="Texture2D" uid="uid://bv188fhlcyb8c" path="res://assets/snake_minigame/sprites/TESTING_snake_tile.png" id="2_akj05"]
 [ext_resource type="Texture2D" uid="uid://b32vcobkx71k2" path="res://assets/snake_minigame/sprites/TESTING_snake.png" id="2_t3wji"]
-[ext_resource type="Texture2D" uid="uid://bf6anknlgwk7o" path="res://icon.svg" id="3_t3wji"]
 [ext_resource type="Script" uid="uid://bls8mpkxtx17r" path="res://assets/snake_minigame/scenes/highlight.gd" id="4_akj05"]
 [ext_resource type="Script" uid="uid://b8h5yyhsv6i57" path="res://assets/snake_minigame/scenes/grid.gd" id="4_efr80"]
 
 [sub_resource type="TileMapPattern" id="TileMapPattern_akj05"]
-tile_data = PackedInt32Array(0, 65536, 1, 65536, 0, 0, 1, 0, 0, 65537, 65536, 1)
+tile_data = PackedInt32Array(0, 0, 0, 65536, 131072, 0, 1, 131072, 0, 65537, 0, 0)
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_efr80"]
-texture = ExtResource("3_t3wji")
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_akj05"]
+texture = ExtResource("2_akj05")
+margins = Vector2i(20, 20)
 texture_region_size = Vector2i(40, 40)
-1:1/0 = 0
 0:0/0 = 0
+2:0/0 = 0
 
-[sub_resource type="TileSet" id="TileSet_k1hxc"]
+[sub_resource type="TileSet" id="TileSet_4ct16"]
 tile_size = Vector2i(40, 40)
-sources/0 = SubResource("TileSetAtlasSource_efr80")
+sources/0 = SubResource("TileSetAtlasSource_akj05")
 pattern_0 = SubResource("TileMapPattern_akj05")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_k1hxc"]
@@ -63,7 +64,7 @@ sources/0 = SubResource("TileSetAtlasSource_k1hxc")
 script = ExtResource("1_k1hxc")
 
 [node name="Grid" type="TileMapLayer" parent="." unique_id=51774952]
-tile_set = SubResource("TileSet_k1hxc")
+tile_set = SubResource("TileSet_4ct16")
 script = ExtResource("4_efr80")
 
 [node name="Highlight" type="Node2D" parent="." unique_id=811973854]
