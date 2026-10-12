@@ -8,7 +8,7 @@ func _ready() -> void:
 	size = grid.tile_set.tile_size
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if grid.mouse_tile != _last_tile:
 		_last_tile = grid.mouse_tile
 		queue_redraw()
@@ -16,5 +16,4 @@ func _process(delta: float) -> void:
 func _draw() -> void:
 	if _last_tile.x < 0:
 		return
-	print(_last_tile)
-	draw_rect(Rect2(Vector2(_last_tile) * size, size), Color(255, 0, 0, 1), true)
+	draw_rect(Rect2(Vector2(_last_tile) * size, size), Color(1, 0, 0, 1), true)
