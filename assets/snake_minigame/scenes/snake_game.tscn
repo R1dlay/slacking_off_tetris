@@ -60,8 +60,11 @@ texture_region_size = Vector2i(40, 40)
 tile_size = Vector2i(40, 40)
 sources/0 = SubResource("TileSetAtlasSource_k1hxc")
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4rj7q"]
+
 [node name="SnakeGame" type="Node2D" unique_id=465209036]
 script = ExtResource("1_k1hxc")
+snake_body = Array[Vector2i]([Vector2i(20, 10), Vector2i(19, 10), Vector2i(18, 10), Vector2i(17, 10), Vector2i(16, 10), Vector2i(15, 10), Vector2i(14, 10), Vector2i(13, 10), Vector2i(12, 10), Vector2i(11, 10), Vector2i(10, 10), Vector2i(9, 10), Vector2i(8, 10), Vector2i(7, 10), Vector2i(6, 10), Vector2i(5, 10), Vector2i(4, 10), Vector2i(3, 10), Vector2i(2, 10), Vector2i(1, 10)])
 
 [node name="Grid" type="TileMapLayer" parent="." unique_id=51774952]
 tile_set = SubResource("TileSet_4ct16")
@@ -77,5 +80,31 @@ tile_set = SubResource("TileSet_4rj7q")
 wait_time = 0.2
 autostart = true
 
+[node name="EndLayer" type="CanvasLayer" parent="." unique_id=1302152288]
+unique_name_in_owner = true
+visible = false
+
+[node name="EndLabel" type="Label" parent="EndLayer" unique_id=736152827]
+unique_name_in_owner = true
+offset_right = 1924.0
+offset_bottom = 1440.0
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_font_sizes/font_size = 200
+theme_override_styles/normal = SubResource("StyleBoxFlat_4rj7q")
+text = "You win!
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button" type="Button" parent="EndLayer" unique_id=1154821914]
+offset_left = 864.0
+offset_top = 749.0
+offset_right = 1116.0
+offset_bottom = 826.0
+theme_override_colors/font_color = Color(0.875, 0.875, 0.875, 1)
+theme_override_font_sizes/font_size = 50
+text = "Play again"
+
 [connection signal="timeout" from="SnakeTick" to="." method="_on_snake_tick_timeout"]
 [connection signal="timeout" from="SnakeTick" to="Grid" method="_on_snake_tick_timeout"]
+[connection signal="pressed" from="EndLayer/Button" to="." method="_on_button_pressed"]
