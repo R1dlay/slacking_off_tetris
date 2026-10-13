@@ -17,7 +17,7 @@ var _tile_size: Vector2i;
 func  _ready() -> void:
 	_tile_size = tile_set.tile_size
 	grid_size = get_viewport().size / grid_scale / _tile_size
-	mouse_tile = Vector2i(grid_size.x - 10, int(grid_size.y * 0.5))
+	mouse_tile = Vector2i(grid_size.x - 10, int(grid_size.y - 15))
 	Input.warp_mouse.call_deferred(map_to_local(mouse_tile))
 	var _pattern = tile_set.get_pattern(0)
 	for x in range(0, grid_size.x, 2):
