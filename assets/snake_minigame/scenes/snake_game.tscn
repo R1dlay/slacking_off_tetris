@@ -106,7 +106,23 @@ text = "You win!
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Button" type="Button" parent="EndLayer" unique_id=1154821914]
+[node name="AgainButton" type="Button" parent="EndLayer" unique_id=132465077]
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.55
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -126.0
+offset_top = 3.0
+offset_right = 126.0
+offset_bottom = -406.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.875, 0.875, 0.875, 1)
+theme_override_font_sizes/font_size = 50
+text = "Play Again"
+
+[node name="DoneButton" type="Button" parent="EndLayer" unique_id=1154821914]
 anchors_preset = -1
 anchor_left = 0.5
 anchor_top = 0.55
@@ -124,4 +140,5 @@ text = "Done"
 
 [connection signal="timeout" from="SnakeTick" to="." method="_on_snake_tick_timeout"]
 [connection signal="timeout" from="SnakeTick" to="Grid" method="_on_snake_tick_timeout"]
-[connection signal="pressed" from="EndLayer/Button" to="LossScreenLoader" method="load_scene"]
+[connection signal="pressed" from="EndLayer/AgainButton" to="." method="_on_again_button_pressed"]
+[connection signal="pressed" from="EndLayer/DoneButton" to="LossScreenLoader" method="load_scene"]
