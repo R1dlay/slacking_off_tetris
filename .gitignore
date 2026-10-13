@@ -37,3 +37,4 @@ mono_crash.*.json
 
 #csproj backups
 *.csproj.old*
+.vscode/settings.json
