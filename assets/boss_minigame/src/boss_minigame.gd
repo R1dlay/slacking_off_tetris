@@ -7,6 +7,7 @@ signal step_result(correct: bool)
 signal sequence_completed
 signal boss_speaks(symbol_idx: int, color: Color)
 signal boss_finished
+signal player_won
 
 @export var talking_wheel: Node
 @export var tone_wheel: Node
@@ -24,6 +25,8 @@ var curr_sequence: Array[Dictionary] = []  # symbol : color
 var curr_step: int = 0
 var level := 0
 var input_enabled := false
+var finished := false
+var _round_id := 0
 
 func _ready() -> void:
 	tone_wheel.selected.connect(_on_tone_selected)
@@ -52,23 +55,26 @@ func _generate_sequence() -> void:
 	_boss_sequence()
 	
 func _boss_sequence() -> void:
+	var my_id := _round_id
 	input_enabled = false
 	talking_wheel.set_locked(true)
 	tone_wheel.set_locked(true)
 
 	for item in curr_sequence:
+		if finished: return
 		var color: Color = tone_wheel.colors[item.color_idx]
 		boss_speaks.emit(item.symbol_idx, color)
 		await get_tree().create_timer(reveal_duration).timeout
 		await get_tree().create_timer(reveal_gap).timeout
 
+	if finished or my_id != _round_id: return
 	input_enabled = true
 	talking_wheel.set_locked(false)
 	tone_wheel.set_locked(false)
 	boss_finished.emit()
 
 func _on_tone_selected(position: int) -> void:
-	if not input_enabled:
+	if finished or not input_enabled:
 		return
 	var selected_symbol: int = talking_wheel.get_symbol_at_tone(position)
 	var expected: Dictionary = curr_sequence[curr_step]
@@ -82,14 +88,14 @@ func _on_tone_selected(position: int) -> void:
 		_on_mistake()
 
 func _on_correct_step() -> void:
-	print("correct")
 	curr_step += 1
 	if curr_step >= curr_sequence.size():
 		meter = min(meter + meter_win, meter_max)
 		meter_changed.emit(true, meter, meter_max)
-		if meter >= meter_max:
-			print("win")
 		sequence_completed.emit()
+		if meter >= meter_max:
+			_win()
+			return
 		level += 1
 		_generate_sequence()
 	else:
@@ -100,4 +106,25 @@ func _on_mistake() -> void:
 	meter = max(meter - meter_loss, 0.0)
 	meter_changed.emit(false, meter, meter_max)
 	sequence_completed.emit()
+	_start_new_sequence()
+	
+func _win() -> void:
+	finished = true
+	input_enabled = false
+	talking_wheel.set_locked(true)
+	tone_wheel.set_locked(true)
+	%EndLayer.show()
+	player_won.emit()
+
+
+func _on_again_button_pressed() -> void:
+	_round_id += 1
+	finished = false
+	input_enabled = false
+	meter = 0.0
+	level = 0
+	curr_step = 0
+	curr_sequence.clear()
+	%EndLayer.hide()
+	meter_changed.emit(false, meter, meter_max)
 	_start_new_sequence()
