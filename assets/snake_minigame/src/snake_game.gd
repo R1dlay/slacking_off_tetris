@@ -8,7 +8,7 @@ extends Node
 const SNAKE = 0
 const CONE_DEPTH := 1
 # === Exported Vars === (snake_case)
-@export var snake_body: Array[Vector2i] = [Vector2i(5,10),Vector2i(4,10),Vector2i(3,10),Vector2i(2,10), Vector2i(1,10)]
+@export var snake_body: Array[Vector2i] #= [Vector2i(5,10),Vector2i(4,10),Vector2i(3,10),Vector2i(2,10), Vector2i(1,10)]
 @export var snake_direction = Vector2i(1,0)
 # === Public Vars === (snake_case)
 @onready var grid: TileMapLayer = $Grid
@@ -18,6 +18,14 @@ var grid_size: Vector2i
 # === Godot Methods ===
 func  _ready() -> void:
 	grid_size = $Grid.grid_size
+	# TODO: replace with something that isn't literally the laziest way to do this
+	snake_body = [ Vector2i(18,10), 
+				Vector2i(20-3,10), Vector2i(19-3,10), Vector2i(18-3,10), 
+				Vector2i(20-6,10), Vector2i(19-6,10), Vector2i(18-6,10), 
+				Vector2i(20-9,10), Vector2i(19-9,10), Vector2i(18-9,10), 
+				Vector2i(20-12,10), Vector2i(19-12,10), Vector2i(18-12,10), 
+				]
+	snake_direction = Vector2i(1, 0)
 
 func _on_snake_tick_timeout() -> void:
 	snake_direction = _find_direction()
@@ -131,6 +139,8 @@ func _player_lose():
 func _snake_lose():
 	var head = snake_body[0]
 	# snake leaves the screen
+	print(head)
+	
 	if _is_wall(head):
 		print("snake die")
 		return true

@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://b32vcobkx71k2" path="res://assets/snake_minigame/sprites/TESTING_snake.png" id="2_t3wji"]
 [ext_resource type="Script" uid="uid://bls8mpkxtx17r" path="res://assets/snake_minigame/src/highlight.gd" id="4_akj05"]
 [ext_resource type="Script" uid="uid://b8h5yyhsv6i57" path="res://assets/snake_minigame/src/grid.gd" id="4_efr80"]
+[ext_resource type="PackedScene" uid="uid://buw8yg5q65vxc" path="res://assets/main_menu/scenes/loss_screen_loader.tscn" id="6_4ct16"]
 
 [sub_resource type="TileMapPattern" id="TileMapPattern_akj05"]
 tile_data = PackedInt32Array(0, 0, 0, 65536, 131072, 0, 1, 131072, 0, 65537, 0, 0)
@@ -80,14 +81,23 @@ tile_set = SubResource("TileSet_4rj7q")
 wait_time = 0.2
 autostart = true
 
+[node name="LossScreenLoader" parent="." unique_id=1559724307 instance=ExtResource("6_4ct16")]
+loss_path = "res://assets/main_menu/scenes/playtest_menu.tscn"
+
 [node name="EndLayer" type="CanvasLayer" parent="." unique_id=1302152288]
 unique_name_in_owner = true
 visible = false
 
 [node name="EndLabel" type="Label" parent="EndLayer" unique_id=736152827]
 unique_name_in_owner = true
-offset_right = 1924.0
-offset_bottom = 1440.0
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.3330001
+offset_left = -962.0
+offset_right = 962.0
+offset_bottom = 0.35998535
+grow_horizontal = 2
 theme_override_colors/font_color = Color(0, 1, 0, 1)
 theme_override_font_sizes/font_size = 200
 theme_override_styles/normal = SubResource("StyleBoxFlat_4rj7q")
@@ -97,14 +107,21 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Button" type="Button" parent="EndLayer" unique_id=1154821914]
-offset_left = 864.0
-offset_top = 749.0
-offset_right = 1116.0
-offset_bottom = 826.0
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.55
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -126.0
+offset_top = 206.0
+offset_right = 126.0
+offset_bottom = -203.0
+grow_horizontal = 2
+grow_vertical = 0
 theme_override_colors/font_color = Color(0.875, 0.875, 0.875, 1)
 theme_override_font_sizes/font_size = 50
-text = "Play again"
+text = "Done"
 
 [connection signal="timeout" from="SnakeTick" to="." method="_on_snake_tick_timeout"]
 [connection signal="timeout" from="SnakeTick" to="Grid" method="_on_snake_tick_timeout"]
-[connection signal="pressed" from="EndLayer/Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="EndLayer/Button" to="LossScreenLoader" method="load_scene"]
