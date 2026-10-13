@@ -7,6 +7,14 @@ extends Node
 # === Constants === (CONSTANT_CASE)
 const SNAKE = 0
 const CONE_DEPTH := 1
+const START_BODY: Array[Vector2i] = [
+				Vector2i(18,10), 
+				Vector2i(20-3,10), Vector2i(19-3,10), Vector2i(18-3,10), 
+				Vector2i(20-6,10), Vector2i(19-6,10), Vector2i(18-6,10), 
+				Vector2i(20-9,10), Vector2i(19-9,10), Vector2i(18-9,10), 
+				Vector2i(20-12,10), Vector2i(19-12,10), Vector2i(18-12,10), 
+				]
+const SNAKE_DIR = Vector2i(1, 0)
 # === Exported Vars === (snake_case)
 @export var snake_body: Array[Vector2i] #= [Vector2i(5,10),Vector2i(4,10),Vector2i(3,10),Vector2i(2,10), Vector2i(1,10)]
 @export var snake_direction = Vector2i(1,0)
@@ -18,15 +26,16 @@ var grid_size: Vector2i
 # === Godot Methods ===
 func  _ready() -> void:
 	grid_size = $Grid.grid_size
+	_reset_snake_state()
 	# TODO: replace with something that isn't literally the laziest way to do this
-	snake_body = [ Vector2i(18,10), 
-				Vector2i(20-3,10), Vector2i(19-3,10), Vector2i(18-3,10), 
-				Vector2i(20-6,10), Vector2i(19-6,10), Vector2i(18-6,10), 
-				Vector2i(20-9,10), Vector2i(19-9,10), Vector2i(18-9,10), 
-				Vector2i(20-12,10), Vector2i(19-12,10), Vector2i(18-12,10), 
-				]
-	snake_direction = Vector2i(1, 0)
-
+	#snake_body = [ Vector2i(18,10), 
+				#Vector2i(20-3,10), Vector2i(19-3,10), Vector2i(18-3,10), 
+				#Vector2i(20-6,10), Vector2i(19-6,10), Vector2i(18-6,10), 
+				#Vector2i(20-9,10), Vector2i(19-9,10), Vector2i(18-9,10), 
+				#Vector2i(20-12,10), Vector2i(19-12,10), Vector2i(18-12,10), 
+				#]
+	#snake_direction = Vector2i(1, 0)
+	
 func _on_snake_tick_timeout() -> void:
 	snake_direction = _find_direction()
 	move_snake()
@@ -37,6 +46,10 @@ func _on_snake_tick_timeout() -> void:
 		show_win(true)
 
 # === Further Methods === (public snake_case, private _underscored_snake_case, local vars snake_case)
+func _reset_snake_state() -> void:
+	snake_body = START_BODY.duplicate()
+	snake_direction = SNAKE_DIR
+
 func _find_direction() -> Vector2i:
 	var left := Vector2i(snake_direction.y, -snake_direction.x)
 	var paths: Array[Vector2i] = [_move_to_mouse(), snake_direction, left, -left]
@@ -158,12 +171,13 @@ func show_win(win: bool):
 	%EndLabel.add_theme_color_override("font_color", Color.GREEN if win else Color.RED)
 	%EndLayer.visible = true
 
-func _on_button_pressed() -> void:
+func _on_again_button_pressed() -> void:
 	reset()
 
 func reset():
-	snake_body = [Vector2i(5,10),Vector2i(4,10),Vector2i(3,10), Vector2i(2,10), Vector2i(1,10)]
-	snake_direction = Vector2i(1,0)	
+	#snake_body = [Vector2i(5,10),Vector2i(4,10),Vector2i(3,10), Vector2i(2,10), Vector2i(1,10)]
+	#snake_direction = Vector2i(1,0)	
+	_reset_snake_state()
 	$Snake.clear()
 	draw_snake()
 	%EndLayer.visible = false
