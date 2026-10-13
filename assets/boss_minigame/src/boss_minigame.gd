@@ -109,12 +109,7 @@ func _on_mistake() -> void:
 	_start_new_sequence()
 	
 func _win() -> void:
-	finished = true
-	input_enabled = false
-	talking_wheel.set_locked(true)
-	tone_wheel.set_locked(true)
-	%EndLayer.show()
-	player_won.emit()
+	get_node("LossScreenLoader").load_scene();
 
 
 func _on_again_button_pressed() -> void:

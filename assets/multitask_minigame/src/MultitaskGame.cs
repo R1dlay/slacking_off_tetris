@@ -175,6 +175,11 @@ public partial class MultitaskGame : Node
 		_virusInstances.Add(pb);
 		pb.OnDraggedToZero += KillVirus;
 
+		//PLAYTEST:
+		pb.OnWaitedMax += () => {
+            GD.Print(GetNode("%EndScreenLoader").Call("load_scene")); 
+		};
+
 		AddChild(pb);
 
         EmitSignal(SignalName.OnSpawnPullback, pb);

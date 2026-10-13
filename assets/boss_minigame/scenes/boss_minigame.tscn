@@ -7,8 +7,6 @@
 [ext_resource type="Texture2D" uid="uid://h4g07vxqkrai" path="res://assets/boss_minigame/sprites/speech.png" id="5_mv6ej"]
 [ext_resource type="PackedScene" uid="uid://buw8yg5q65vxc" path="res://assets/main_menu/scenes/loss_screen_loader.tscn" id="6_1060k"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cntlv"]
-
 [node name="BossMinigame" type="Node2D" unique_id=1460465798 node_paths=PackedStringArray("talking_wheel", "tone_wheel")]
 script = ExtResource("1_rjfy2")
 talking_wheel = NodePath("Node2D/OuterWheel")
@@ -50,63 +48,6 @@ texture = ExtResource("5_mv6ej")
 flip_h = true
 
 [node name="LossScreenLoader" parent="." unique_id=1559724307 instance=ExtResource("6_1060k")]
-loss_path = "res://assets/main_menu/scenes/playtest_menu.tscn"
-
-[node name="EndLayer" type="CanvasLayer" parent="." unique_id=638830305]
-unique_name_in_owner = true
-visible = false
-
-[node name="EndLabel" type="Label" parent="EndLayer" unique_id=2131658368]
-unique_name_in_owner = true
-anchors_preset = -1
-anchor_left = 0.5
-anchor_right = 0.5
-anchor_bottom = 1.3330001
-offset_left = -962.0
-offset_right = 962.0
-offset_bottom = 0.35998535
-grow_horizontal = 2
-theme_override_colors/font_color = Color(0, 1, 0, 1)
-theme_override_font_sizes/font_size = 200
-theme_override_styles/normal = SubResource("StyleBoxFlat_cntlv")
-text = "You win!
-"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="AgainButton" type="Button" parent="EndLayer" unique_id=964556220]
-anchors_preset = -1
-anchor_left = 0.5
-anchor_top = 0.55
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -126.0
-offset_top = 3.0
-offset_right = 126.0
-offset_bottom = -406.0
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_colors/font_color = Color(0.875, 0.875, 0.875, 1)
-theme_override_font_sizes/font_size = 50
-text = "Play Again"
-
-[node name="DoneButton" type="Button" parent="EndLayer" unique_id=1580458746]
-anchors_preset = -1
-anchor_left = 0.5
-anchor_top = 0.55
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -126.0
-offset_top = 206.0
-offset_right = 126.0
-offset_bottom = -203.0
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_colors/font_color = Color(0.875, 0.875, 0.875, 1)
-theme_override_font_sizes/font_size = 50
-text = "Done"
-
-[connection signal="pressed" from="EndLayer/AgainButton" to="." method="_on_again_button_pressed"]
-[connection signal="pressed" from="EndLayer/DoneButton" to="LossScreenLoader" method="load_scene"]
+loss_path = "res://assets/main_menu/scenes/generic_loss_loader.tscn"
 
 [editable path="Node2D"]

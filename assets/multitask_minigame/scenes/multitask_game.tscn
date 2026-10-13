@@ -5,11 +5,8 @@
 [ext_resource type="Script" uid="uid://ba1qskyg32b5x" path="res://assets/multitask_minigame/src/MultitaskGame.cs" id="1_ts1fx"]
 [ext_resource type="PackedScene" uid="uid://cx0xkve0ov07c" path="res://assets/multitask_minigame/scenes/virus_pullback.tscn" id="2_gdae6"]
 [ext_resource type="Texture2D" uid="uid://5lrqfc2lryxi" path="res://assets/multitask_minigame/resources/standard_pullback_gradient.tres" id="3_ts1fx"]
-
-[sub_resource type="Curve" id="Curve_6bw7e"]
-_limits = [0.1, 5.0, 0.0, 60.0]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.1, 5), 0.0, 0.0, 0, 0, Vector2(10, 5), 0.0, 0.0, 0, 0, Vector2(45, 1.5), -0.22252692, -0.023184638, 0, 0, Vector2(60, 0.75), -0.019762075, 0.0, 0, 0]
-point_count = 5
+[ext_resource type="Curve" uid="uid://0qe2ld34cqwt" path="res://assets/multitask_minigame/resources/standard_linear_multitask_curve.tres" id="4_cnp1y"]
+[ext_resource type="PackedScene" uid="uid://buw8yg5q65vxc" path="res://assets/main_menu/scenes/loss_screen_loader.tscn" id="4_ts1fx"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ts1fx"]
 shader = ExtResource("1_pp1yv")
@@ -29,9 +26,9 @@ orientation = 2
 script = ExtResource("1_ts1fx")
 PullbackScene = ExtResource("2_gdae6")
 PullbackFalloffGrad = ExtResource("3_ts1fx")
-PullbackWeightAndFalloffsByPosIndex = Array[Vector3]([Vector3(300, 75, 750), Vector3(250, 100, 1200), Vector3(300, 75, 750), Vector3(250, 100, 1200), Vector3(300, 75, 750), Vector3(250, 100, 1200), Vector3(300, 75, 750), Vector3(250, 100, 1200)])
-SpawnTimeByElapsedTimeCurve = SubResource("Curve_6bw7e")
-TimeScaleWhenNoVirus = 1.2
+PullbackWeightAndFalloffsByPosIndex = Array[Vector3]([Vector3(250, 100, 750), Vector3(200, 50, 500), Vector3(250, 100, 750), Vector3(200, 50, 500), Vector3(250, 100, 750), Vector3(200, 50, 500), Vector3(250, 100, 750), Vector3(200, 50, 500)])
+SpawnTimeByElapsedTimeCurve = ExtResource("4_cnp1y")
+TimeScaleWhenNoVirus = 2.0
 
 [node name="WorkScreen" type="MeshInstance2D" parent="." unique_id=427642758]
 material = SubResource("ShaderMaterial_ts1fx")
@@ -42,3 +39,7 @@ texture = ExtResource("1_48mhq")
 unique_name_in_owner = true
 visible = false
 texture = ExtResource("1_48mhq")
+
+[node name="EndScreenLoader" parent="." unique_id=1559724307 instance=ExtResource("4_ts1fx")]
+unique_name_in_owner = true
+loss_path = "res://assets/main_menu/scenes/generic_loss_loader.tscn"

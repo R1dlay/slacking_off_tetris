@@ -25,9 +25,9 @@ func  _physics_process(delta: float) -> void:
 # === Further Methods === (public snake_case, private _underscored_snake_case, local vars snake_case)
 
 func load_scene(scene_path: String, scene_size: Vector2i) :
-	assert(ResourceLoader.exists(scene_path))
+	var scene = load(scene_path)
 	update_vp_size(scene_size)
-	get_tree().change_scene_to_file(scene_path)
+	get_tree().change_scene_to_packed(scene)
 
 # update the size to the given new size. Rescale the window to fit as well
 func update_vp_size(new_size: Vector2i) :

@@ -128,15 +128,19 @@ public partial class VirusPullback : Node2D
         if(_progress != 1)
         {
             _waitProgress = 0; //reset
+            Modulate = Color.Color8(255, 255, 255, 255);
         }
         else
         {
             _waitProgress = Mathf.Clamp(_waitProgress + dt / WaitAtMaxTime, 0, 1);
+            byte colorVal = (byte)(255 - Mathf.Clamp(Mathf.FloorToInt(Mathf.Lerp(0, 325, _waitProgress * _waitProgress)), 0, 255));
+            Modulate = Color.Color8(255, colorVal, colorVal, 255);
         }
 
         // emit wait progress signal if needed
         if(_waitProgress == 1 && !_reachedWaitEnd)
         {
+            
             _reachedWaitEnd = true;
             EmitSignal(SignalName.OnWaitedMax);
         }
