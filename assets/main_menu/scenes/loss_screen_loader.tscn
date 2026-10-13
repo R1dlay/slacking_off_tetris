@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://buw8yg5q65vxc"]
+
+[ext_resource type="Script" uid="uid://bydy78fa0ypca" path="res://assets/main_menu/src/loss_screen_loader.gd" id="1_myar0"]
+
+[node name="LossScreenLoader" type="Node" unique_id=1559724307]
+script = ExtResource("1_myar0")
+loss_path = "res://assets/main_menu/src/loss_screen_loader.gd"

@@ -1,0 +1,12 @@
+[gd_resource type="Theme" format=3 uid="uid://bjv64m1qph4ao"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5v7lo"]
+bg_color = Color(0.24, 0.31733334, 0.32, 1)
+
+[resource]
+Button/font_sizes/font_size = 50
+HBoxContainer/constants/separation = 75
+Label/font_sizes/font_size = 100
+MarginContainer/constants/margin_bottom = 75
+Panel/styles/panel = SubResource("StyleBoxFlat_5v7lo")
+VBoxContainer/constants/separation = 50

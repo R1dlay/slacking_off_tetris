@@ -6,7 +6,7 @@ extends Node
 
 # === Constants === (CONSTANT_CASE)
 const SNAKE = 0
-const CONE_DEPTH := 3
+const CONE_DEPTH := 1
 # === Exported Vars === (snake_case)
 @export var snake_body: Array[Vector2i] = [Vector2i(5,10),Vector2i(4,10),Vector2i(3,10),Vector2i(2,10), Vector2i(1,10)]
 @export var snake_direction = Vector2i(1,0)

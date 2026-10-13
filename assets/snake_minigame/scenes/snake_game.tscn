@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://ce3aewpf0ulhk"]
 
-[ext_resource type="Script" uid="uid://tejmjk7pdvb2" path="res://assets/snake_minigame/scenes/snake_game.gd" id="1_k1hxc"]
+[ext_resource type="Script" uid="uid://tejmjk7pdvb2" path="res://assets/snake_minigame/src/snake_game.gd" id="1_k1hxc"]
 [ext_resource type="Texture2D" uid="uid://bv188fhlcyb8c" path="res://assets/snake_minigame/sprites/TESTING_snake_tile.png" id="2_akj05"]
 [ext_resource type="Texture2D" uid="uid://b32vcobkx71k2" path="res://assets/snake_minigame/sprites/TESTING_snake.png" id="2_t3wji"]
-[ext_resource type="Script" uid="uid://bls8mpkxtx17r" path="res://assets/snake_minigame/scenes/highlight.gd" id="4_akj05"]
-[ext_resource type="Script" uid="uid://b8h5yyhsv6i57" path="res://assets/snake_minigame/scenes/grid.gd" id="4_efr80"]
+[ext_resource type="Script" uid="uid://bls8mpkxtx17r" path="res://assets/snake_minigame/src/highlight.gd" id="4_akj05"]
+[ext_resource type="Script" uid="uid://b8h5yyhsv6i57" path="res://assets/snake_minigame/src/grid.gd" id="4_efr80"]
 
 [sub_resource type="TileMapPattern" id="TileMapPattern_akj05"]
 tile_data = PackedInt32Array(0, 0, 0, 65536, 131072, 0, 1, 131072, 0, 65537, 0, 0)

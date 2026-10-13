@@ -1,0 +1,65 @@
+[gd_scene format=3 uid="uid://debbbhwy8n6qc"]
+
+[ext_resource type="Theme" uid="uid://bjv64m1qph4ao" path="res://assets/main_menu/themes/playtest_menu.tres" id="1_5v7lo"]
+[ext_resource type="Script" uid="uid://t1dpcm867q00" path="res://assets/main_menu/src/main_menu_loader.gd" id="1_b0u61"]
+
+[node name="MainMenuLoader" type="Panel" unique_id=1254879595]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_5v7lo")
+script = ExtResource("1_b0u61")
+menu_path = "res://assets/main_menu/scenes/playtest_menu.tscn"
+
+[node name="VertContainer" type="VBoxContainer" parent="." unique_id=369793268]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_5v7lo")
+alignment = 1
+
+[node name="TitleContainer" type="MarginContainer" parent="VertContainer" unique_id=191375236]
+layout_mode = 2
+theme = ExtResource("1_5v7lo")
+
+[node name="Label" type="Label" parent="VertContainer/TitleContainer" unique_id=457132923]
+layout_mode = 2
+theme = ExtResource("1_5v7lo")
+text = "Slacking Off! Playtest 1 :>"
+horizontal_alignment = 1
+
+[node name="ThanksReturn" type="MarginContainer" parent="VertContainer" unique_id=2021844203]
+layout_mode = 2
+theme = ExtResource("1_5v7lo")
+
+[node name="VertContainer" type="VBoxContainer" parent="VertContainer/ThanksReturn" unique_id=698279754]
+layout_mode = 2
+theme = ExtResource("1_5v7lo")
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="Label" type="Label" parent="VertContainer/ThanksReturn/VertContainer" unique_id=246545985]
+layout_mode = 2
+theme = ExtResource("1_5v7lo")
+theme_override_font_sizes/font_size = 75
+text = "Thank you for playing!"
+horizontal_alignment = 1
+
+[node name="ReturnSizer" type="MarginContainer" parent="VertContainer/ThanksReturn/VertContainer" unique_id=576565286]
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("1_5v7lo")
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
+
+[node name="Button" type="Button" parent="VertContainer/ThanksReturn/VertContainer/ReturnSizer" unique_id=862642166]
+layout_mode = 2
+text = "   Return to Main Menu   "
+
+[connection signal="pressed" from="VertContainer/ThanksReturn/VertContainer/ReturnSizer/Button" to="." method="load_main_menu"]
