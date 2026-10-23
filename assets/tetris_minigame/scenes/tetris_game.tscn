@@ -1,0 +1,87 @@
+[gd_scene format=3 uid="uid://b28fvx5nx6ijf"]
+
+[ext_resource type="Texture2D" uid="uid://cvkx2n0lqk8nd" path="res://assets/tetris_minigame/sprites/tetrominoes.png" id="1_71j7n"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_6vgrm"]
+texture = ExtResource("1_71j7n")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+6:0/0 = 0
+7:0/0 = 0
+8:0/0 = 0
+9:0/0 = 0
+10:0/0 = 0
+11:0/0 = 0
+12:0/0 = 0
+13:0/0 = 0
+14:0/0 = 0
+15:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+4:1/0 = 0
+5:1/0 = 0
+6:1/0 = 0
+7:1/0 = 0
+8:1/0 = 0
+9:1/0 = 0
+10:1/0 = 0
+11:1/0 = 0
+12:1/0 = 0
+13:1/0 = 0
+14:1/0 = 0
+15:1/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_okxap"]
+sources/0 = SubResource("TileSetAtlasSource_6vgrm")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lb4c7"]
+texture = ExtResource("1_71j7n")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+6:0/0 = 0
+7:0/0 = 0
+8:0/0 = 0
+9:0/0 = 0
+10:0/0 = 0
+11:0/0 = 0
+12:0/0 = 0
+13:0/0 = 0
+14:0/0 = 0
+15:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+4:1/0 = 0
+5:1/0 = 0
+6:1/0 = 0
+7:1/0 = 0
+8:1/0 = 0
+9:1/0 = 0
+10:1/0 = 0
+11:1/0 = 0
+12:1/0 = 0
+13:1/0 = 0
+14:1/0 = 0
+15:1/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_kgkcx"]
+sources/0 = SubResource("TileSetAtlasSource_lb4c7")
+
+[node name="Node2D" type="Node2D" unique_id=2001040708]
+
+[node name="board" type="TileMapLayer" parent="." unique_id=528209049]
+tile_set = SubResource("TileSet_okxap")
+
+[node name="active" type="TileMapLayer" parent="." unique_id=39329047]
+tile_set = SubResource("TileSet_kgkcx")
