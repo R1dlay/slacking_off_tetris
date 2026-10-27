@@ -4,7 +4,7 @@
 #Date: Nov 5, 2023
 #URL: https://youtu.be/2T2Fkzwf6FM?si=EsoPkz0qBYQ7HkaJ
 
-extends  TileMapLayer
+extends Node2D
 
 # === Signals === (snake_case)
 
@@ -18,6 +18,10 @@ const ROWS : int = 20;
 # === Exported Vars === (snake_case)
 
 # === Public Vars === (snake_case)
+#The grid is layered as the board in the background and the active piece layer drawn on top of it
+@onready var board_layer: TileMapLayer = $BoardLayer
+@onready var active_layer: TileMapLayer = $ActiveLayer
+
 #The Teris grid uses a tilemap, then draws the pieces onto the grid as they drop. This simplifies collision and
 #objects but does require that every piece be mapped out on a small grid. Think of it as a "memory" of shapes and
 #their rotations that the grid can draw on to the tilemap. Each array represents a rotation of a particular 
@@ -87,16 +91,12 @@ var next_piece_type
 var active_piece : Array
 var rotation_index : int = 0
 
-#Provides the ID of the tileset that is used for drawing the Tetrominoes
+#Provides the ID of the tileset that is used for drawing the Tetrominoes, referred to as the atlas in functions
 var tile_id : int = 0
 
 #Provides an index from the tilest that corresponds to the current and next Tetromino being dropped
 var piece_atlas : Vector2i
 var next_piece_atlas : Vector2i
-
-#The grid is layered into the board and the active piece layer drawn on top of it
-@export var board: TileMapLayer
-@export var active: TileMapLayer
 
 # === Private Vars === (_underscored_snake_case)
 
@@ -105,13 +105,18 @@ var next_piece_atlas : Vector2i
 func  _ready() -> void:
 	pass
 
-func  _physics_process(delta: float) -> void:
-	pass
+func _process(_delta):
+	draw_piece(j[0], Vector2i(5, 1), Vector2i(1, 0))
 
 #This function is used to draw the pieces onto the grid. The first argument it takes is any tetromino as piece, which
-#contains the coordinates for how the piece should be drawn onto the grid at any given rotation.
+#contains the coordinates for how the piece should be drawn onto the grid at any given rotation. The second argument
+#is a vector which determines which position on the grid it should start drawing the piece. The last argument is the
+#coordinates on the tetromino atlas for the color desired
 func draw_piece(piece, pos, atlas):
-	for i in piece:
-		set_cell()
+	#Iterates through the coordinates of the piece fed to the function
+	for x in piece:
+		#For each coordinate iteration a colored tile is drawn onto the position using the tetromino atlas and the
+		#piece position, which is adjusted based on the local coordinates of the individual piece shape
+		active_layer.set_cell(pos + x, tile_id, atlas)
 
 # === Further Methods === (public snake_case, private _underscored_snake_case, local vars snake_case)
