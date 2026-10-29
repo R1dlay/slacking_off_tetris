@@ -20,8 +20,11 @@ const ROWS : int = 20;
 #Grid starting position, which is where a tetromino is initially spawned
 const START_POS := Vector2i(5, 1)
 
-#The max amount of steps, which is incremented every frame, until a piece is moved
+#The max amount of steps until a piece is moved
 const STEPS_REQ : int = 100
+
+#Stores the proper direction vectors in an easily accesible array
+const DIRECTIONS := [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.DOWN]
 
 # === Exported Vars === (snake_case)
 
@@ -32,8 +35,8 @@ const STEPS_REQ : int = 100
 @onready var active_layer: TileMapLayer = $ActiveLayer
 
 # = Movement Variables =
-#The steps counter, which is incremented every frame until it hits max and a piece is moved
-var steps : int
+#Has a counter for each direction, which moves a piece when it hits the max steps
+var steps : Array
 
 #Establishes a variable for tracking a tetromino's position as it falls
 var cur_pos : Vector2i
@@ -132,8 +135,9 @@ func  _ready() -> void:
 	new_game()
 
 func new_game():
+	#Resets the piece dropping speed and step counters
 	speed = 1
-	steps = 0
+	steps = [0, 0, 0] #0: Left, 1: Right, 2: Down
 	
 	piece_type = pick_piece()
 	
@@ -143,12 +147,27 @@ func new_game():
 
 #Built-in function called every frame
 func _process(_delta):
-	#Applies downward movement every frame by applying by incrementing steps by speed until it hits the required
-	#amount of steps, where it will then call the move piece function and resets the step count
-	steps += speed
-	if steps > STEPS_REQ:
-		move_piece(Vector2i.DOWN)
-		steps = 0
+	#Listens for inputs from the player in the cardinal directions (besides up)
+	if Input.is_action_pressed("left"):
+		#Greatly increments left steps
+		steps[0] += 10
+	elif Input.is_action_pressed("right"):
+		#Greatly increments right steps
+		steps[1] += 10
+	elif Input.is_action_pressed("down"):
+		#Greatly increments down steps
+		steps[2] += 10
+	
+	#Increments the down steps counter every frame by speed
+	steps[2] += speed
+	
+	#Checks each direction's step counter
+	for x in range (steps.size()):
+		#If a direction's step counter has surpassed the steps required, the piece is moved in the proper direction
+		#and the step counter for that direction is reset
+		if steps[x] > STEPS_REQ:
+			move_piece(DIRECTIONS[x])
+			steps[x] = 0
 
 ##This function randomly picks a tetromino using 7-bag randomization. This is where a "bag" of all seven tetrominoes 
 ##is created, and from there the game randomly picks from the "bag" until it is empty, where it is once again filled
@@ -194,6 +213,7 @@ func clear_piece():
 ##Creates a new tetromino at the top of the board
 func create_piece():
 	#Resets the variables so it can spawn a new piece at the start position
+	steps = [0, 0, 0]
 	cur_pos = START_POS
 	active_piece = piece_type[rotation_index]
 	
@@ -202,13 +222,37 @@ func create_piece():
 
 ##Fed a direction vector, which is then used to move the active tetromino's position
 func move_piece(dir):
-	#Clears the previous piece drawing before starting any movement
-	clear_piece()
+	#Using the established function, verifies if the directional movement is valid within the grid
+	if can_move(dir):
+		#Clears the previous piece drawing before starting any movement
+		clear_piece()
+		
+		#Increments current position in the direction that is fed to the method
+		cur_pos += dir
+		
+		#Calls draw piece with the new position
+		draw_piece(active_piece, cur_pos, piece_atlas)
+
+##Using the outer board layer, the function returns the tile source ID at the given coordinates, in this case the
+##position being feed to the function. If the position exists, true is returned, and if it doesn't, false is returned
+##I need to research more of the minutiae as to why this works this way with tilemaplayer as opposed to how it works
+##in the video with Tilemap
+func is_free(pos):
+	return board_layer.get_cell_source_id(pos) == -1
+
+func can_move(dir):
+	#Local can move boolean
+	var cm = true
 	
-	#Increments current position in the direction that is fed to the method
-	cur_pos += dir
-	
-	#Calls draw piece with the new position
-	draw_piece(active_piece, cur_pos, piece_atlas)
+	#Iterates through each coordinate in the active piece
+	for x in active_piece:
+		#Checks the "is free" function against each coordinate of the tetromino relative to the current position and
+		#direction that the piece being attempted to be moved in.
+		if is_free(x + cur_pos + dir + dir): #Direction is used twice because there is an offset for some reason, another thing to look into exactly why
+			#If a space is not free, can move is set to false
+			cm = false
+			
+	#Returns whether the piece can move or not
+	return cm
 
 # === Further Methods === (public snake_case, private _underscored_snake_case, local vars snake_case)
