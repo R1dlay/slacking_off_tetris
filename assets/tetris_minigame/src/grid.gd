@@ -145,6 +145,19 @@ func new_game():
 	
 	create_piece()
 
+#Built in virtual function that is called when a discrete user action is detected
+func _input(event):
+	#These inputs are here to prevent the rapid rotation you would get from one brief click in process, which is
+	#called every single frame
+	#Listens for the rotate clockwise input
+	if Input.is_action_pressed("rotate_cw"):
+		#Calls the corresponding rotation function 
+		rotate_piece_cw()
+	#Listens for the rotate counterclockwise input
+	elif Input.is_action_just_pressed("rotate_ccw"):
+		#Calls the corresponding rotation function 
+		rotate_piece_ccw()
+
 #Built-in function called every frame
 func _process(_delta):
 	#Listens for inputs from the player in the cardinal directions (besides up)
@@ -220,6 +233,37 @@ func create_piece():
 	#Calls the draw piece function with the reset variables
 	draw_piece(active_piece, cur_pos, piece_atlas)
 
+##Rotates the current active piece clockwise
+func rotate_piece_cw():
+	#Checks if the rotation is valid
+	if can_rotate_cw():
+		#Clears the piece from the board to prevent ghost pieces
+		clear_piece()
+		
+		#Modifies the rotation index by + 1, using the modular division operator to loop it if it goes out of range
+		rotation_index = (rotation_index + 1) % 4
+		#Assigns the active piece the new rotation index
+		active_piece = piece_type[rotation_index]
+		
+		#Redraws the piece with its newly assigned rotation index
+		draw_piece(active_piece, cur_pos, piece_atlas)
+
+##Rotates the current active piece counterclockwise
+func rotate_piece_ccw():
+	#Checks if the rotation is valid
+	if can_rotate_ccw():
+		#Clears the piece from the board to prevent ghost pieces
+		clear_piece()
+		
+		#Modifies the rotation index by + 1, using the posmod function to loop it if it goes out of range while ensuring
+		#that the result is positive
+		rotation_index = posmod((rotation_index - 1), 4)
+		#Assigns the active piece the new rotation index
+		active_piece = piece_type[rotation_index]
+		
+		#Redraws the piece with its newly assigned rotation index
+		draw_piece(active_piece, cur_pos, piece_atlas)
+
 ##Fed a direction vector, which is then used to move the active tetromino's position
 func move_piece(dir):
 	#Using the established function, verifies if the directional movement is valid within the grid
@@ -240,6 +284,7 @@ func move_piece(dir):
 func is_free(pos):
 	return board_layer.get_cell_source_id(pos) == -1
 
+##verifies whether the current active piece can move in the direction that is being fed to the function
 func can_move(dir):
 	#Local can move boolean
 	var cm = true
@@ -254,5 +299,33 @@ func can_move(dir):
 			
 	#Returns whether the piece can move or not
 	return cm
+
+##Checks if rotating clockwise is valid, or if it interferes with the grid border
+func can_rotate_cw():
+	#Local "can rotate" boolean
+	var cr = true
+	
+	#Tests the rotation using a temporary rotation index variable
+	var temp_rotation_index = (rotation_index + 1) % 4
+	
+	#Checks the temporary rotation against the current piece and its position
+	for x in piece_type[temp_rotation_index]:
+		#If the position it is attempting to be moved into is not free, "can rotate" is set to false
+		if not is_free(x + cur_pos):
+			cr = false
+
+##Checks if rotating counterclockwise is valid, or if it interferes with the grid border
+func can_rotate_ccw():
+	#Local "can rotate" boolean
+	var cr = true
+	
+	#Tests the rotation using a temporary rotation index variable
+	var temp_rotation_index = posmod((rotation_index - 1), 4)
+	
+	#Checks the temporary rotation against the current piece and its position
+	for x in piece_type[temp_rotation_index]:
+		#If the position it is attempting to be moved into is not free, "can rotate" is set to false
+		if not is_free(x + cur_pos):
+			cr = false
 
 # === Further Methods === (public snake_case, private _underscored_snake_case, local vars snake_case)
